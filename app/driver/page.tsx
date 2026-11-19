@@ -1,7 +1,9 @@
 import type { Metadata } from 'next'
 import { Clock, ShieldAlert, XCircle } from 'lucide-react'
 import { DriverApplication } from '@/components/driver/driver-application'
+import { CourierJobs } from '@/components/driver/courier-jobs'
 import { DriverDashboard } from '@/components/driver/driver-dashboard'
+import type { VehicleClass } from '@/lib/shipments'
 import { requireUser } from '@/lib/session'
 import type { RideStatus } from '@/lib/rides'
 
@@ -18,6 +20,7 @@ type Driver = {
   vehicle_color: string
   plate_number: string
   category_code: string
+  delivery_class: VehicleClass | null
 }
 
 export default async function DriverPage() {
@@ -28,7 +31,7 @@ export default async function DriverPage() {
   const [{ data: driver }, { data: categories }] = await Promise.all([
     supabase
       .from('drivers')
-      .select('status, review_note, is_online, license_number, vehicle_make, vehicle_model, vehicle_year, vehicle_color, plate_number, category_code')
+      .select('status, review_note, is_online, license_number, vehicle_make, vehicle_model, vehicle_year, vehicle_color, plate_number, category_code, delivery_class')
       .eq('id', user.id)
       .maybeSingle<Driver>(),
     supabase.from('ride_categories').select('code, name, seats').eq('is_active', true).order('sort_order'),
@@ -98,14 +101,17 @@ export default async function DriverPage() {
       trips: rows.length,
     }
     body = (
-      <DriverDashboard
-        initialOnline={driver.is_online}
-        categoryName={categoryName}
-        locale={locale}
-        currency={currency}
-        activeTrips={active ?? []}
-        earnings={earnings}
-      />
+      <>
+        <DriverDashboard
+          initialOnline={driver.is_online}
+          categoryName={categoryName}
+          locale={locale}
+          currency={currency}
+          activeTrips={active ?? []}
+          earnings={earnings}
+        />
+        <CourierJobs courierId={user.id} deliveryClass={driver.delivery_class} locale={locale} />
+      </>
     )
   }
 

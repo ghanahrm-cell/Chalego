@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { ArrowLeft, Car, CreditCard, Globe2, IdCard, KeyRound, LayoutDashboard, ScrollText, Tags } from 'lucide-react'
+import { ArrowLeft, Car, CreditCard, Globe2, IdCard, KeyRound, LayoutDashboard, Package, ScrollText, Tags } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const LINKS = [
@@ -10,6 +10,7 @@ const LINKS = [
   { href: '/admin/rides', label: 'Rides', icon: Car },
   { href: '/admin/drivers', label: 'Drivers', icon: IdCard },
   { href: '/admin/rentals', label: 'Rentals', icon: KeyRound },
+  { href: '/admin/deliveries', label: 'Deliveries', icon: Package },
   { href: '/admin/fares', label: 'Fares & airports', icon: Tags },
   { href: '/admin/countries', label: 'Countries', icon: Globe2 },
   { href: '/admin/payment-methods', label: 'Payment methods', icon: CreditCard },

@@ -61,6 +61,16 @@ export default async function DivisionPage({ params }: { params: Promise<{ slug:
                 Browse all available {division.slug === 'truck-rentals' ? 'trucks' : 'vehicles'}
               </Link>
             )}
+            {(division.slug === 'cargo' || division.slug === 'moto-delivery') && (
+              <div className="mt-3 flex justify-center gap-4 text-sm font-medium">
+                <Link href={division.slug === 'cargo' ? '/send?kind=cargo' : '/send'} className="text-primary hover:underline">
+                  {division.slug === 'cargo' ? 'Book cargo now' : 'Send a parcel now'}
+                </Link>
+                <Link href="/track" className="text-primary hover:underline">
+                  Track a delivery
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </section>
