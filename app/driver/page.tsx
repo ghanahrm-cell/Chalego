@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Clock, ShieldAlert, XCircle } from 'lucide-react'
 import { DriverApplication } from '@/components/driver/driver-application'
 import { CourierJobs } from '@/components/driver/courier-jobs'
+import { FoodJobs } from '@/components/food/food-jobs'
 import { DriverDashboard } from '@/components/driver/driver-dashboard'
 import type { VehicleClass } from '@/lib/shipments'
 import { requireUser } from '@/lib/session'
@@ -111,6 +112,7 @@ export default async function DriverPage() {
           earnings={earnings}
         />
         <CourierJobs courierId={user.id} deliveryClass={driver.delivery_class} locale={locale} />
+        <FoodJobs courierId={user.id} enabled={Boolean(driver.delivery_class) && driver.is_online} locale={locale} />
       </>
     )
   }
