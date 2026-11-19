@@ -3,15 +3,15 @@ import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
 import { DIVISIONS } from '@/lib/divisions'
 import { SectionHeading } from '@/components/section-heading'
+import { divisionText } from '@/lib/i18n'
+import { getT } from '@/lib/i18n-server'
 
-export function ServicesGrid() {
+export async function ServicesGrid() {
+  const { lang, t } = await getT()
+
   return (
     <section id="services" className="mx-auto max-w-7xl px-4 py-20 md:px-6 md:py-28">
-      <SectionHeading
-        eyebrow="Ten services, one account"
-        title="Get around, get things moved, get settled."
-        description="Every CHALEGO service shares one login, one wallet and one support team — so switching from a ride to a hotel to dinner takes seconds."
-      />
+      <SectionHeading eyebrow={t('services.eyebrow')} title={t('services.title')} description={t('services.body')} />
       <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {DIVISIONS.map((d, i) => (
           <li key={d.slug} className={i < 2 ? 'lg:col-span-2' : undefined}>
@@ -32,8 +32,8 @@ export function ServicesGrid() {
                   <span className="mb-3 flex size-10 items-center justify-center rounded-lg bg-accent text-accent-foreground">
                     <d.icon className="size-5" aria-hidden="true" />
                   </span>
-                  <h3 className="text-xl font-semibold">{d.name}</h3>
-                  <p className="mt-1 max-w-sm text-sm text-ink-foreground/80">{d.tagline}</p>
+                  <h3 className="text-xl font-semibold">{divisionText(lang, d.slug, 'name', d.name)}</h3>
+                  <p className="mt-1 max-w-sm text-sm text-ink-foreground/80">{divisionText(lang, d.slug, 'tagline', d.tagline)}</p>
                 </div>
                 <ArrowUpRight
                   className="size-5 shrink-0 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
