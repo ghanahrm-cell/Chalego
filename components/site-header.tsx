@@ -4,8 +4,8 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { ChevronDown, Menu, X } from 'lucide-react'
 import { Logo } from '@/components/logo'
-import { Button } from '@/components/ui/button'
 import { CountrySwitcher } from '@/components/country-switcher'
+import { HeaderAuth } from '@/components/header-auth'
 import { DIVISIONS } from '@/lib/divisions'
 
 const NAV_LINKS = [
@@ -69,12 +69,7 @@ export function SiteHeader() {
 
         <div className="hidden items-center gap-2 lg:flex">
           <CountrySwitcher />
-          <Button variant="ghost" size="sm" render={<Link href="/#app" />} nativeButton={false}>
-            Log in
-          </Button>
-          <Button size="sm" render={<Link href="/#app" />} nativeButton={false}>
-            Sign up
-          </Button>
+          <HeaderAuth />
         </div>
 
         <button
@@ -118,9 +113,7 @@ export function SiteHeader() {
             </ul>
             <div className="mt-4 flex items-center justify-between gap-2 border-t pt-4">
               <CountrySwitcher />
-              <Button size="sm" render={<Link href="/#app" onClick={() => setOpen(false)} />} nativeButton={false}>
-                Get the app
-              </Button>
+              <HeaderAuth onNavigate={() => setOpen(false)} />
             </div>
           </div>
         </nav>
