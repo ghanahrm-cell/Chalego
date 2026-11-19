@@ -1,4 +1,4 @@
-export type RentalKind = 'vehicle' | 'truck'
+export type RentalKind = 'vehicle' | 'truck' | 'equipment'
 export type DriveOptions = 'self_drive' | 'with_driver' | 'both'
 export type RentalStatus = 'requested' | 'confirmed' | 'active' | 'completed' | 'cancelled' | 'rejected'
 
@@ -57,9 +57,16 @@ export type RentalQuote = {
   currency: string
 }
 
-export const KIND_META: Record<RentalKind, { title: string; noun: string; slug: string }> = {
-  vehicle: { title: 'Vehicle rentals', noun: 'vehicle', slug: 'vehicle-rentals' },
-  truck: { title: 'Truck rentals', noun: 'truck', slug: 'truck-rentals' },
+export const RENTAL_KINDS = ['vehicle', 'truck', 'equipment'] as const
+
+export const KIND_META: Record<RentalKind, { title: string; noun: string; slug: string; tab: string; heading: string }> = {
+  vehicle: { title: 'Vehicle rentals', noun: 'vehicle', slug: 'vehicle-rentals', tab: 'Cars & vans', heading: 'Rent a car your way' },
+  truck: { title: 'Truck rentals', noun: 'truck', slug: 'truck-rentals', tab: 'Trucks', heading: 'Hire a truck for every load' },
+  equipment: { title: 'Equipment rentals', noun: 'machine', slug: 'equipment-rentals', tab: 'Equipment', heading: 'Heavy equipment, ready for your site' },
+}
+
+export function parseKind(v: string | undefined): RentalKind {
+  return (RENTAL_KINDS as readonly string[]).includes(v ?? '') ? (v as RentalKind) : 'vehicle'
 }
 
 export const DRIVE_LABELS: Record<DriveOptions, string> = {
@@ -67,6 +74,22 @@ export const DRIVE_LABELS: Record<DriveOptions, string> = {
   with_driver: 'With driver',
   both: 'Self-drive or with driver',
 }
+
+export const OPERATOR_LABELS: Record<DriveOptions, string> = {
+  self_drive: 'Bare hire (no operator)',
+  with_driver: 'With operator',
+  both: 'Bare hire or with operator',
+}
+
+export function driveLabels(kind: RentalKind) {
+  return kind === 'equipment' ? OPERATOR_LABELS : DRIVE_LABELS
+}
+
+export const EQUIPMENT_AGREEMENT_EXTRA = [
+  'For bare hire, only trained and certified operators will run the machine, following the manufacturer safety rules.',
+  'Engine hours are recorded at pickup and return; daily rates include up to 8 engine hours per day unless the owner states otherwise.',
+  'I will provide safe site access and secure the machine against theft when it is not in use.',
+]
 
 export const FUEL_TYPES = ['petrol', 'diesel', 'hybrid', 'electric', 'cng'] as const
 export const FUEL_LEVELS = [

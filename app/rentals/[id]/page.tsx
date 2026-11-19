@@ -8,7 +8,7 @@ import { RentalBooker } from '@/components/rentals/rental-booker'
 import { createClient } from '@/lib/supabase/server'
 import { getSessionProfile } from '@/lib/session'
 import { formatMoney, type PaymentMethod } from '@/lib/account'
-import { capitalize, DRIVE_LABELS, formatCapacity, formatRange, RENTAL_SELECT, type RentalVehicle } from '@/lib/rentals'
+import { capitalize, driveLabels, formatCapacity, formatRange, KIND_META, RENTAL_SELECT, type RentalVehicle } from '@/lib/rentals'
 import { cn } from '@/lib/utils'
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -64,10 +64,14 @@ export default async function RentalDetailPage({
     ['Category', category?.name ?? capitalize(v.category_code)],
     ['Make & model', `${v.make} ${v.model}`],
     ['Year', String(v.year)],
-    ['Transmission', capitalize(v.transmission)],
-    ['Fuel', capitalize(v.fuel_type)],
-    [v.kind === 'truck' ? 'Cab seats' : 'Seats', String(v.seats)],
-    ...(capacity ? [['Load capacity', capacity]] : []),
+    ...(v.kind === 'equipment'
+      ? [['Power source', capitalize(v.fuel_type)]]
+      : [
+          ['Transmission', capitalize(v.transmission)],
+          ['Fuel', capitalize(v.fuel_type)],
+          [v.kind === 'truck' ? 'Cab seats' : 'Seats', String(v.seats)],
+        ]),
+    ...(capacity ? [[v.kind === 'equipment' ? 'Operating weight / capacity' : 'Load capacity', capacity]] : []),
     ...(v.cargo_volume_m3 ? [['Cargo volume', `${v.cargo_volume_m3} m³`]] : []),
     ['Minimum rental', v.min_hours >= 24 ? `${Math.round(v.min_hours / 24)} day${v.min_hours >= 48 ? 's' : ''}` : `${v.min_hours} hours`],
   ]
@@ -82,7 +86,7 @@ export default async function RentalDetailPage({
     <main id="main" className="mx-auto w-full max-w-7xl px-4 py-8 md:px-6 lg:py-10">
       <nav aria-label="Breadcrumb" className="mb-4 text-sm text-muted-foreground">
         <Link href={`/rentals?kind=${v.kind}&country=${v.country_code}`} className="hover:text-foreground">
-          {v.kind === 'truck' ? 'Truck rentals' : 'Vehicle rentals'}
+          {KIND_META[v.kind].title}
         </Link>
         <span aria-hidden="true"> / </span>
         <span className="text-foreground">{v.title}</span>
@@ -155,7 +159,7 @@ export default async function RentalDetailPage({
             </dl>
             <ul className="flex flex-col gap-1 text-sm text-muted-foreground">
               <li>Security deposit: <span className="font-medium text-foreground">{money(v.security_deposit)}</span>, refundable after inspection</li>
-              <li>Options: <span className="font-medium text-foreground">{DRIVE_LABELS[v.drive_options]}</span>{v.drive_options !== 'self_drive' && Number(v.driver_daily_fee) > 0 ? ` · driver ${money(v.driver_daily_fee)}/day` : ''}</li>
+              <li>Options: <span className="font-medium text-foreground">{driveLabels(v.kind)[v.drive_options]}</span>{v.drive_options !== 'self_drive' && Number(v.driver_daily_fee) > 0 ? ` · ${v.kind === 'equipment' ? 'operator' : 'driver'} ${money(v.driver_daily_fee)}/day` : ''}</li>
               <li>{v.delivery_available ? `Delivery to your address: ${money(v.delivery_fee)}` : 'Pickup from the listed address only'}</li>
               <li>Weekly and monthly rates apply automatically when cheaper.</li>
             </ul>

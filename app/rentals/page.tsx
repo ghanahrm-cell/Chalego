@@ -1,17 +1,17 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
-import { CarFront, Truck } from 'lucide-react'
+import { CarFront, Construction, Truck } from 'lucide-react'
 import { buttonVariants } from '@/components/ui/button'
 import { RentalCard } from '@/components/rentals/rental-card'
 import { createClient } from '@/lib/supabase/server'
 import { getSessionProfile } from '@/lib/session'
 import { fieldClass } from '@/lib/account'
-import { KIND_META, toIsoFromDate, type RentalCategory, type RentalKind, type RentalVehicle } from '@/lib/rentals'
+import { KIND_META, RENTAL_KINDS, parseKind, toIsoFromDate, type RentalCategory, type RentalKind, type RentalVehicle } from '@/lib/rentals'
 import { cn } from '@/lib/utils'
 
 export const metadata: Metadata = {
-  title: 'Rent cars and trucks',
-  description: "Rent verified cars, vans, buses and trucks in Ghana, Nigeria and Côte d'Ivoire. Self-drive or with a driver, by the hour, day, week or month.",
+  title: 'Rent cars, trucks and heavy equipment',
+  description: "Rent verified cars, vans, trucks, excavators, cranes and generators in Ghana, Nigeria and Côte d'Ivoire. Self-drive, with a driver or operator, by the hour, day, week or month.",
 }
 
 type Search = Record<string, string | string[] | undefined>
@@ -25,7 +25,7 @@ const COUNTRY_INFO: Record<string, { name: string; locale: string; cities: strin
 
 export default async function RentalsPage({ searchParams }: { searchParams: Promise<Search> }) {
   const sp = await searchParams
-  const kind: RentalKind = one(sp.kind) === 'truck' ? 'truck' : 'vehicle'
+  const kind: RentalKind = parseKind(one(sp.kind))
   const session = await getSessionProfile()
   const paramCountry = one(sp.country)?.toUpperCase()
   const country = paramCountry && COUNTRY_INFO[paramCountry] ? paramCountry : session?.profile?.country_code ?? 'GH'
@@ -67,15 +67,15 @@ export default async function RentalsPage({ searchParams }: { searchParams: Prom
       <header className="mb-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
           <h1 className="text-balance font-heading text-3xl font-bold tracking-tight md:text-4xl">
-            {kind === 'truck' ? 'Hire a truck for every load' : 'Rent a car your way'}
+            {meta.heading}
           </h1>
           <p className="mt-1 text-pretty text-muted-foreground">
             Verified {meta.noun}s from CHALEGO Fleet and approved partners across {info.name}.
           </p>
         </div>
         <nav aria-label="Rental type" className="flex rounded-xl border bg-card p-1">
-          {(['vehicle', 'truck'] as const).map((k) => {
-            const Icon = k === 'truck' ? Truck : CarFront
+          {RENTAL_KINDS.map((k) => {
+            const Icon = k === 'truck' ? Truck : k === 'equipment' ? Construction : CarFront
             return (
               <Link
                 key={k}
@@ -86,7 +86,7 @@ export default async function RentalsPage({ searchParams }: { searchParams: Prom
                   k === kind ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground',
                 )}
               >
-                <Icon className="size-4" aria-hidden="true" /> {k === 'truck' ? 'Trucks' : 'Cars & vans'}
+                <Icon className="size-4" aria-hidden="true" /> {KIND_META[k].tab}
               </Link>
             )
           })}
@@ -121,8 +121,8 @@ export default async function RentalsPage({ searchParams }: { searchParams: Prom
         <Field label="Option">
           <select name="drive" defaultValue={drive ?? ''} className={fieldClass}>
             <option value="">Any</option>
-            <option value="self_drive">Self-drive</option>
-            <option value="with_driver">With driver</option>
+            <option value="self_drive">{kind === 'equipment' ? 'Bare hire' : 'Self-drive'}</option>
+            <option value="with_driver">{kind === 'equipment' ? 'With operator' : 'With driver'}</option>
           </select>
         </Field>
         <div className="flex flex-col gap-1.5">

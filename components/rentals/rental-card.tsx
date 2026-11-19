@@ -2,7 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { Fuel, Gauge, Star, UserRound, Weight } from 'lucide-react'
 import { formatMoney } from '@/lib/account'
-import { capitalize, DRIVE_LABELS, formatCapacity, type RentalVehicle } from '@/lib/rentals'
+import { capitalize, driveLabels, formatCapacity, type RentalVehicle } from '@/lib/rentals'
 
 export function RentalCard({ v, locale, categoryName, query }: { v: RentalVehicle; locale: string; categoryName?: string; query?: string }) {
   const capacity = formatCapacity(v.load_capacity_kg)
@@ -47,7 +47,7 @@ export function RentalCard({ v, locale, categoryName, query }: { v: RentalVehicl
           <li className="flex items-center gap-1"><Fuel className="size-3.5" aria-hidden="true" />{capitalize(v.fuel_type)}</li>
         </ul>
         <div className="mt-auto flex items-end justify-between gap-2 border-t pt-3">
-          <p className="text-xs text-muted-foreground">{DRIVE_LABELS[v.drive_options]}</p>
+          <p className="text-xs text-muted-foreground">{driveLabels(v.kind)[v.drive_options]}</p>
           <p className="text-right">
             <span className="font-heading text-lg font-bold">{formatMoney(Number(v.daily_rate), v.currency, locale)}</span>
             <span className="text-xs text-muted-foreground"> /day</span>

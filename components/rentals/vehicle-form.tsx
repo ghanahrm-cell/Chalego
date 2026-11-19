@@ -8,7 +8,7 @@ import { PhotoUploader } from '@/components/rentals/photo-uploader'
 import { createClient } from '@/lib/supabase/client'
 import { fieldClass } from '@/lib/account'
 import { errorMessage } from '@/lib/rides'
-import { capitalize, FUEL_TYPES, type RentalCategory, type RentalKind, type RentalVehicle } from '@/lib/rentals'
+import { capitalize, FUEL_TYPES, RENTAL_KINDS, type RentalCategory, type RentalKind, type RentalVehicle } from '@/lib/rentals'
 import { cn } from '@/lib/utils'
 
 function Field({ label, className, children }: { label: string; className?: string; children: React.ReactNode }) {
@@ -41,6 +41,7 @@ export function VehicleForm({
   const [pending, setPending] = useState(false)
   const [error, setError] = useState('')
   const cats = categories.filter((c) => c.kind === kind)
+  const isEquipment = kind === 'equipment'
   const num = (n: number | null | undefined) => (n == null ? '' : String(n))
 
   async function submit(f: FormData) {
@@ -60,7 +61,7 @@ export function VehicleForm({
       transmission: get('transmission'),
       fuel_type: get('fuel_type'),
       seats: get('seats'),
-      load_capacity_kg: kind === 'truck' ? get('load_capacity_kg') : '',
+      load_capacity_kg: kind !== 'vehicle' ? get('load_capacity_kg') : '',
       cargo_volume_m3: kind === 'truck' ? get('cargo_volume_m3') : '',
       features: get('features').split(',').map((s) => s.trim()).filter(Boolean).slice(0, 20),
       description: get('description'),
@@ -93,9 +94,9 @@ export function VehicleForm({
       className="flex flex-col gap-6"
     >
       <section className="grid gap-4 rounded-2xl border bg-card p-5 sm:grid-cols-2">
-        <h2 className="font-heading text-base font-semibold sm:col-span-2">Vehicle</h2>
-        <div role="radiogroup" aria-label="Listing type" className="grid grid-cols-2 gap-2 sm:col-span-2">
-          {(['vehicle', 'truck'] as const).map((k) => (
+        <h2 className="font-heading text-base font-semibold sm:col-span-2">{isEquipment ? 'Machine' : 'Vehicle'}</h2>
+        <div role="radiogroup" aria-label="Listing type" className="grid grid-cols-3 gap-2 sm:col-span-2">
+          {RENTAL_KINDS.map((k) => (
             <button
               key={k}
               type="button"
@@ -104,7 +105,7 @@ export function VehicleForm({
               onClick={() => setKind(k)}
               className={cn('h-11 rounded-lg border text-sm font-medium', kind === k ? 'border-primary bg-primary/10 text-primary' : 'hover:border-foreground/30')}
             >
-              {k === 'truck' ? 'Truck' : 'Car, van or bus'}
+              {k === 'truck' ? 'Truck' : k === 'equipment' ? 'Equipment' : 'Car, van or bus'}
             </button>
           ))}
         </div>
@@ -123,20 +124,29 @@ export function VehicleForm({
           </select>
         </Field>
         <Field label="Listing title" className="sm:col-span-2">
-          <input name="title" required minLength={3} maxLength={100} defaultValue={vehicle?.title} placeholder="Toyota Corolla 2022" className={fieldClass} />
+          <input name="title" required minLength={3} maxLength={100} defaultValue={vehicle?.title} placeholder={isEquipment ? 'CAT 320 excavator, 20 t' : 'Toyota Corolla 2022'} className={fieldClass} />
         </Field>
         <Field label="Make"><input name="make" required minLength={2} maxLength={40} defaultValue={vehicle?.make} className={fieldClass} /></Field>
         <Field label="Model"><input name="model" required maxLength={40} defaultValue={vehicle?.model} className={fieldClass} /></Field>
         <Field label="Year"><input name="year" type="number" required min={1990} max={2100} defaultValue={vehicle?.year ?? new Date().getFullYear()} className={fieldClass} /></Field>
-        <Field label={kind === 'truck' ? 'Cab seats' : 'Seats'}><input name="seats" type="number" required min={1} max={80} defaultValue={vehicle?.seats ?? (kind === 'truck' ? 2 : 5)} className={fieldClass} /></Field>
-        <Field label="Transmission">
-          <select name="transmission" defaultValue={vehicle?.transmission ?? 'automatic'} className={fieldClass}>
-            <option value="automatic">Automatic</option>
-            <option value="manual">Manual</option>
-          </select>
-        </Field>
-        <Field label="Fuel">
-          <select name="fuel_type" defaultValue={vehicle?.fuel_type ?? 'petrol'} className={fieldClass}>
+        {isEquipment ? (
+          <>
+            <input type="hidden" name="seats" value={vehicle?.seats ?? 1} />
+            <input type="hidden" name="transmission" value={vehicle?.transmission ?? 'manual'} />
+          </>
+        ) : (
+          <>
+            <Field label={kind === 'truck' ? 'Cab seats' : 'Seats'}><input key={kind} name="seats" type="number" required min={1} max={80} defaultValue={vehicle?.seats ?? (kind === 'truck' ? 2 : 5)} className={fieldClass} /></Field>
+            <Field label="Transmission">
+              <select name="transmission" defaultValue={vehicle?.transmission ?? 'automatic'} className={fieldClass}>
+                <option value="automatic">Automatic</option>
+                <option value="manual">Manual</option>
+              </select>
+            </Field>
+          </>
+        )}
+        <Field label={isEquipment ? 'Power source' : 'Fuel'}>
+          <select key={kind} name="fuel_type" defaultValue={vehicle?.fuel_type ?? (kind === 'vehicle' ? 'petrol' : 'diesel')} className={fieldClass}>
             {FUEL_TYPES.map((t) => <option key={t} value={t}>{capitalize(t)}</option>)}
           </select>
         </Field>
@@ -146,8 +156,11 @@ export function VehicleForm({
             <Field label="Cargo volume (m³, optional)"><input name="cargo_volume_m3" type="number" min={0} max={200} step="0.1" defaultValue={num(vehicle?.cargo_volume_m3)} className={fieldClass} /></Field>
           </>
         )}
+        {isEquipment && (
+          <Field label="Operating weight or lift capacity (kg, optional)"><input name="load_capacity_kg" type="number" min={1} max={500000} defaultValue={num(vehicle?.load_capacity_kg)} className={fieldClass} /></Field>
+        )}
         <Field label="Features (comma separated)" className="sm:col-span-2">
-          <input name="features" maxLength={600} defaultValue={vehicle?.features.join(', ')} placeholder="Air conditioning, Bluetooth, Reverse camera" className={fieldClass} />
+          <input name="features" maxLength={600} defaultValue={vehicle?.features.join(', ')} placeholder={isEquipment ? 'GPS tracker, Breaker attachment, 8 hrs/day included' : 'Air conditioning, Bluetooth, Reverse camera'} className={fieldClass} />
         </Field>
         <Field label="Description" className="sm:col-span-2">
           <textarea name="description" required minLength={20} maxLength={2000} rows={4} defaultValue={vehicle?.description} className={cn(fieldClass, 'h-auto py-2')} />
@@ -173,19 +186,19 @@ export function VehicleForm({
 
       <section className="grid gap-4 rounded-2xl border bg-card p-5 sm:grid-cols-2">
         <h2 className="font-heading text-base font-semibold sm:col-span-2">Options</h2>
-        <Field label="Drive options">
+        <Field label={isEquipment ? 'Operator options' : 'Drive options'}>
           <select value={drive} onChange={(e) => setDrive(e.target.value as typeof drive)} className={fieldClass}>
-            <option value="both">Self-drive or with driver</option>
-            <option value="self_drive">Self-drive only</option>
-            <option value="with_driver">With driver only</option>
+            <option value="both">{isEquipment ? 'Bare hire or with operator' : 'Self-drive or with driver'}</option>
+            <option value="self_drive">{isEquipment ? 'Bare hire only' : 'Self-drive only'}</option>
+            <option value="with_driver">{isEquipment ? 'With operator only' : 'With driver only'}</option>
           </select>
         </Field>
         {drive !== 'self_drive' && (
-          <Field label="Driver fee per day"><input name="driver_daily_fee" type="number" min={0} step="0.01" defaultValue={num(vehicle?.driver_daily_fee ?? 0)} className={fieldClass} /></Field>
+          <Field label={isEquipment ? 'Operator fee per day' : 'Driver fee per day'}><input name="driver_daily_fee" type="number" min={0} step="0.01" defaultValue={num(vehicle?.driver_daily_fee ?? 0)} className={fieldClass} /></Field>
         )}
         <label className="flex items-center gap-2 text-sm sm:col-span-2">
           <input type="checkbox" checked={delivery} onChange={(e) => setDelivery(e.target.checked)} className="size-4 accent-primary" />
-          Offer delivery to the renter&apos;s address
+          {isEquipment ? 'Offer delivery to the renter\u2019s site (low-loader transport)' : 'Offer delivery to the renter\u2019s address'}
         </label>
         {delivery && (
           <Field label="Delivery fee"><input name="delivery_fee" type="number" min={0} step="0.01" defaultValue={num(vehicle?.delivery_fee ?? 0)} className={fieldClass} /></Field>

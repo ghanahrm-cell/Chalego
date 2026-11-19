@@ -8,12 +8,12 @@ import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/client'
 import { fieldClass, formatMoney, type PaymentMethod } from '@/lib/account'
 import { errorMessage, toLocalInputValue } from '@/lib/rides'
-import { AGREEMENT_V1, ID_TYPES, type DriveOptions, type RentalQuote } from '@/lib/rentals'
+import { AGREEMENT_V1, EQUIPMENT_AGREEMENT_EXTRA, ID_TYPES, type DriveOptions, type RentalKind, type RentalQuote } from '@/lib/rentals'
 import { cn } from '@/lib/utils'
 
 type BookerVehicle = {
   id: string
-  kind: 'vehicle' | 'truck'
+  kind: RentalKind
   country_code: string
   currency: string
   drive_options: DriveOptions
@@ -63,6 +63,7 @@ export function RentalBooker({
 }) {
   const router = useRouter()
   const base = useId()
+  const isEquipment = vehicle.kind === 'equipment'
   const [defaults] = useState(() => initialRange(initialStart, initialEnd, vehicle.min_hours))
   const [start, setStart] = useState(defaults[0])
   const [end, setEnd] = useState(defaults[1])
@@ -149,12 +150,12 @@ export function RentalBooker({
                 onClick={() => setDrive(d)}
                 className={cn('h-11 rounded-lg border text-sm font-medium', drive === d ? 'border-primary bg-primary/10 text-primary' : 'hover:border-foreground/30')}
               >
-                {d === 'self_drive' ? 'Self-drive' : 'With driver'}
+                {d === 'self_drive' ? (isEquipment ? 'Bare hire' : 'Self-drive') : isEquipment ? 'With operator' : 'With driver'}
               </button>
             ))}
           </div>
         ) : (
-          <p className="rounded-lg bg-muted px-3 py-2 text-sm">{drive === 'self_drive' ? 'Self-drive only' : 'Driver included with this rental'}</p>
+          <p className="rounded-lg bg-muted px-3 py-2 text-sm">{drive === 'self_drive' ? (isEquipment ? 'Bare hire only, you supply a certified operator' : 'Self-drive only') : isEquipment ? 'Operator included with this rental' : 'Driver included with this rental'}</p>
         )}
         {vehicle.delivery_available && (
           <label className="flex items-center gap-2 text-sm">
@@ -172,7 +173,7 @@ export function RentalBooker({
         ) : quote ? (
           <dl className="flex flex-col gap-1.5">
             <Row k={`Rental (${quote.label})`} v={money(quote.base)} />
-            {quote.driver_fee > 0 && <Row k="Driver" v={money(quote.driver_fee)} />}
+            {quote.driver_fee > 0 && <Row k={isEquipment ? 'Operator' : 'Driver'} v={money(quote.driver_fee)} />}
             {quote.delivery_fee > 0 && <Row k="Delivery" v={money(quote.delivery_fee)} />}
             {quote.tax > 0 && <Row k={`Tax (${quote.tax_rate}%)`} v={money(quote.tax)} />}
             <Row k="Total" v={money(quote.total)} strong />
@@ -203,7 +204,7 @@ export function RentalBooker({
           </div>
           {drive === 'self_drive' && (
             <div className="flex flex-col gap-1.5">
-              {label('license', 'Driving licence number')}
+              {label('license', isEquipment ? 'Operator certificate or driving licence number' : 'Driving licence number')}
               <input id={`${base}-license`} name="license" required minLength={4} maxLength={40} autoComplete="off" className={fieldClass} />
             </div>
           )}
@@ -221,7 +222,7 @@ export function RentalBooker({
           <details className="rounded-lg border p-3 text-sm" open>
             <summary className="cursor-pointer font-semibold">Rental agreement (v1)</summary>
             <ol className="mt-2 list-decimal space-y-1.5 pl-5 text-muted-foreground">
-              {AGREEMENT_V1.map((t) => <li key={t}>{t}</li>)}
+              {(isEquipment ? [...AGREEMENT_V1, ...EQUIPMENT_AGREEMENT_EXTRA] : AGREEMENT_V1).map((t) => <li key={t}>{t}</li>)}
             </ol>
           </details>
           <div className="flex flex-col gap-1.5">
