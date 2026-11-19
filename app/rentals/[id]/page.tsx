@@ -12,7 +12,7 @@ import { capitalize, DRIVE_LABELS, formatCapacity, formatRange, RENTAL_SELECT, t
 import { cn } from '@/lib/utils'
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-const LOCALES: Record<string, string> = { GH: 'en-GH', NG: 'en-NG' }
+const LOCALES: Record<string, string> = { GH: 'en-GH', NG: 'en-NG', CI: 'fr-CI' }
 
 async function getVehicle(id: string) {
   if (!UUID_RE.test(id)) return null

@@ -12,7 +12,7 @@ import { cn } from '@/lib/utils'
 export const metadata: Metadata = { title: 'Rental booking', robots: { index: false } }
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-const LOCALES: Record<string, string> = { GH: 'en-GH', NG: 'en-NG' }
+const LOCALES: Record<string, string> = { GH: 'en-GH', NG: 'en-NG', CI: 'fr-CI' }
 
 type Details = {
   id: string

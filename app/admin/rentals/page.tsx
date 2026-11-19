@@ -29,7 +29,7 @@ export default async function AdminRentalsPage() {
   const pendingVehicles = (vehicles ?? []).filter((v) => v.status === 'pending')
   const fleet = (vehicles ?? []).filter((v) => v.owner_id === null)
   const titles = new Map((vehicles ?? []).map((v) => [v.id, v.title]))
-  const loc = (c: string) => (c === 'NG' ? 'en-NG' : 'en-GH')
+  const loc = (c: string) => (c === 'NG' ? 'en-NG' : c === 'CI' ? 'fr-CI' : 'en-GH')
 
   return (
     <div className="flex flex-col gap-8">

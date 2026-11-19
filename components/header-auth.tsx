@@ -5,9 +5,11 @@ import { useEffect, useState } from 'react'
 import { UserRound } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/client'
+import { useLanguage } from '@/components/language-provider'
 
 export function HeaderAuth({ onNavigate }: { onNavigate?: () => void }) {
   const [signedIn, setSignedIn] = useState<boolean | null>(null)
+  const { t } = useLanguage()
 
   useEffect(() => {
     const { data } = createClient().auth.onAuthStateChange((_event, session) => {
@@ -22,7 +24,7 @@ export function HeaderAuth({ onNavigate }: { onNavigate?: () => void }) {
     return (
       <Button size="sm" render={<Link href="/account" onClick={onNavigate} />} nativeButton={false}>
         <UserRound className="size-4" aria-hidden="true" />
-        My account
+        {t('auth.account')}
       </Button>
     )
   }
@@ -30,10 +32,10 @@ export function HeaderAuth({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <div className="flex items-center gap-2">
       <Button variant="ghost" size="sm" render={<Link href="/auth/login" onClick={onNavigate} />} nativeButton={false}>
-        Log in
+        {t('auth.login')}
       </Button>
       <Button size="sm" render={<Link href="/auth/sign-up" onClick={onNavigate} />} nativeButton={false}>
-        Sign up
+        {t('auth.signup')}
       </Button>
     </div>
   )

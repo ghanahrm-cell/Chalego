@@ -126,6 +126,7 @@ export const ACTIVE_STATUSES: RideStatus[] = ['requested', 'accepted', 'arriving
 export const COUNTRY_CENTER: Record<string, LatLng> = {
   GH: { lat: 5.6037, lng: -0.187 },
   NG: { lat: 6.5244, lng: 3.3792 },
+  CI: { lat: 5.36, lng: -4.0083 },
 }
 
 export const SERVICE_LEVELS = [

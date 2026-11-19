@@ -8,7 +8,7 @@ import { LISTING_STATUS_STYLES, RENTAL_SELECT, type RentalCategory, type RentalV
 import { cn } from '@/lib/utils'
 
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
-const LOCALES: Record<string, string> = { GH: 'en-GH', NG: 'en-NG' }
+const LOCALES: Record<string, string> = { GH: 'en-GH', NG: 'en-NG', CI: 'fr-CI' }
 
 export default async function EditListingPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params

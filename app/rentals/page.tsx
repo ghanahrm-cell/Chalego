@@ -11,7 +11,7 @@ import { cn } from '@/lib/utils'
 
 export const metadata: Metadata = {
   title: 'Rent cars and trucks',
-  description: 'Rent verified cars, vans, buses and trucks in Ghana and Nigeria. Self-drive or with a driver, by the hour, day, week or month.',
+  description: "Rent verified cars, vans, buses and trucks in Ghana, Nigeria and Côte d'Ivoire. Self-drive or with a driver, by the hour, day, week or month.",
 }
 
 type Search = Record<string, string | string[] | undefined>
@@ -20,6 +20,7 @@ const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v)?
 const COUNTRY_INFO: Record<string, { name: string; locale: string; cities: string[] }> = {
   GH: { name: 'Ghana', locale: 'en-GH', cities: ['Accra', 'Kumasi', 'Tamale', 'Takoradi', 'Cape Coast'] },
   NG: { name: 'Nigeria', locale: 'en-NG', cities: ['Lagos', 'Abuja', 'Port Harcourt', 'Ibadan', 'Kano'] },
+  CI: { name: "Côte d'Ivoire", locale: 'fr-CI', cities: ['Abidjan', 'Yamoussoukro', 'Bouaké', 'San-Pédro', 'Korhogo'] },
 }
 
 export default async function RentalsPage({ searchParams }: { searchParams: Promise<Search> }) {

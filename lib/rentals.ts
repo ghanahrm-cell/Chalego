@@ -100,7 +100,7 @@ export const LISTING_STATUS_STYLES: Record<RentalVehicle['status'], string> = {
   rejected: 'bg-destructive/10 text-destructive',
 }
 
-export const RENTAL_COUNTRY_OFFSET: Record<string, string> = { GH: '+00:00', NG: '+01:00' }
+export const RENTAL_COUNTRY_OFFSET: Record<string, string> = { GH: '+00:00', NG: '+01:00', CI: '+00:00' }
 
 export const AGREEMENT_V1 = [
   'I will return the vehicle on the agreed date and time, in the same condition and with the same fuel level recorded at pickup.',

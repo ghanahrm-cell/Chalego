@@ -1,7 +1,7 @@
 import { NextResponse, type NextRequest } from 'next/server'
 
 const NOMINATIM = 'https://nominatim.openstreetmap.org'
-const ALLOWED_COUNTRIES = new Set(['gh', 'ng'])
+const ALLOWED_COUNTRIES = new Set(['gh', 'ng', 'ci'])
 const HEADERS = { 'User-Agent': 'CHALEGO/1.0 (https://chalego.com)', 'Accept-Language': 'en' }
 
 type NominatimResult = { lat: string; lon: string; display_name: string; name?: string }

@@ -16,7 +16,7 @@ export function AuthShell({ title, description, children }: { title: string; des
         <div className="absolute inset-0 bg-gradient-to-t from-primary via-primary/60 to-transparent" />
         <div className="absolute inset-x-0 bottom-0 p-12 text-primary-foreground">
           <p className="font-heading text-3xl font-bold leading-tight text-balance">
-            One account. Ten services. Ghana and Nigeria.
+            One account. Ten services. Ghana, Nigeria and Côte d&apos;Ivoire.
           </p>
           <p className="mt-3 max-w-md text-primary-foreground/80">
             Rides, rentals, cargo, stays, airport transfers and food, all paid from one secure CHALEGO account.

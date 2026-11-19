@@ -6,7 +6,7 @@ export const metadata: Metadata = { title: 'Create your account | CHALEGO' }
 
 export default function SignUpPage() {
   return (
-    <AuthShell title="Create your CHALEGO account" description="One account for rides, rentals, deliveries, stays and food across Ghana and Nigeria.">
+    <AuthShell title="Create your CHALEGO account" description="One account for rides, rentals, deliveries, stays and food across Ghana, Nigeria and Côte d'Ivoire.">
       <SignUpForm />
     </AuthShell>
   )

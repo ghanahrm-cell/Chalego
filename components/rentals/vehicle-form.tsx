@@ -113,6 +113,7 @@ export function VehicleForm({
             <select name="country_code" defaultValue="GH" className={fieldClass}>
               <option value="GH">Ghana</option>
               <option value="NG">Nigeria</option>
+              <option value="CI">Côte d&apos;Ivoire</option>
             </select>
           </Field>
         )}
