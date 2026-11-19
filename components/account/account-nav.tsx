@@ -2,11 +2,12 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { BedDouble, Building2, Car, IdCard, KeyRound, LayoutDashboard, MapPin, Package, ReceiptText, ShieldCheck, Store, Truck, UserRound, UtensilsCrossed, Wallet } from 'lucide-react'
+import { BedDouble, Bell, Building2, Car, IdCard, KeyRound, LayoutDashboard, MapPin, Package, ReceiptText, ShieldCheck, Store, Truck, UserRound, UtensilsCrossed, Wallet } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const LINKS = [
   { href: '/account', label: 'Overview', icon: LayoutDashboard },
+  { href: '/account/notifications', label: 'Notifications', icon: Bell },
   { href: '/account/trips', label: 'My trips', icon: Car },
   { href: '/account/rentals', label: 'My rentals', icon: KeyRound },
   { href: '/account/stays', label: 'My stays', icon: BedDouble },

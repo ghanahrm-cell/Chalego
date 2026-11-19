@@ -6,6 +6,7 @@ import { UserRound } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { createClient } from '@/lib/supabase/client'
 import { useLanguage } from '@/components/language-provider'
+import { NotificationBell } from '@/components/notification-bell'
 
 export function HeaderAuth({ onNavigate }: { onNavigate?: () => void }) {
   const [signedIn, setSignedIn] = useState<boolean | null>(null)
@@ -22,10 +23,13 @@ export function HeaderAuth({ onNavigate }: { onNavigate?: () => void }) {
 
   if (signedIn) {
     return (
-      <Button size="sm" render={<Link href="/account" onClick={onNavigate} />} nativeButton={false}>
-        <UserRound className="size-4" aria-hidden="true" />
-        {t('auth.account')}
-      </Button>
+      <div className="flex items-center gap-2">
+        <NotificationBell onNavigate={onNavigate} />
+        <Button size="sm" render={<Link href="/account" onClick={onNavigate} />} nativeButton={false}>
+          <UserRound className="size-4" aria-hidden="true" />
+          {t('auth.account')}
+        </Button>
+      </div>
     )
   }
 
