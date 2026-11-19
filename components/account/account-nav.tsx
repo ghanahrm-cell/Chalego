@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { BedDouble, Building2, Car, IdCard, KeyRound, LayoutDashboard, MapPin, Package, ReceiptText, ShieldCheck, Store, Truck, UserRound, UtensilsCrossed } from 'lucide-react'
+import { BedDouble, Building2, Car, IdCard, KeyRound, LayoutDashboard, MapPin, Package, ReceiptText, ShieldCheck, Store, Truck, UserRound, UtensilsCrossed, Wallet } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const LINKS = [
@@ -13,6 +13,7 @@ const LINKS = [
   { href: '/account/deliveries', label: 'My deliveries', icon: Package },
   { href: '/account/food', label: 'My food orders', icon: UtensilsCrossed },
   { href: '/driver', label: 'Drive with us', icon: IdCard },
+  { href: '/partner', label: 'Partner hub', icon: Wallet },
   { href: '/partner/rentals', label: 'List your vehicle', icon: Truck },
   { href: '/partner/stays', label: 'Host your property', icon: Building2 },
   { href: '/partner/food', label: 'Partner your restaurant', icon: Store },
