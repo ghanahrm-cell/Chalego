@@ -2,16 +2,18 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Car, IdCard, KeyRound, LayoutDashboard, MapPin, Package, ReceiptText, ShieldCheck, Truck, UserRound } from 'lucide-react'
+import { BedDouble, Building2, Car, IdCard, KeyRound, LayoutDashboard, MapPin, Package, ReceiptText, ShieldCheck, Truck, UserRound } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 const LINKS = [
   { href: '/account', label: 'Overview', icon: LayoutDashboard },
   { href: '/account/trips', label: 'My trips', icon: Car },
   { href: '/account/rentals', label: 'My rentals', icon: KeyRound },
+  { href: '/account/stays', label: 'My stays', icon: BedDouble },
   { href: '/account/deliveries', label: 'My deliveries', icon: Package },
   { href: '/driver', label: 'Drive with us', icon: IdCard },
   { href: '/partner/rentals', label: 'List your vehicle', icon: Truck },
+  { href: '/partner/stays', label: 'Host your property', icon: Building2 },
   { href: '/account/profile', label: 'Profile', icon: UserRound },
   { href: '/account/addresses', label: 'Saved places', icon: MapPin },
   { href: '/account/payments', label: 'Payments', icon: ReceiptText },

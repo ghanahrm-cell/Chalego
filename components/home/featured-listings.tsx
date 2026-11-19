@@ -32,7 +32,7 @@ const LISTINGS: Listing[] = [
   {
     title: 'The Palms Boutique Hotel',
     type: 'Hotel',
-    href: '/services/hotels',
+    href: '/stays?kind=hotel',
     image: '/images/hotel.png',
     unit: '/ night',
     rating: 4.8,
@@ -42,7 +42,7 @@ const LISTINGS: Listing[] = [
   {
     title: 'Skyline 2-Bed Serviced Apartment',
     type: 'Apartment',
-    href: '/services/apartments',
+    href: '/stays?kind=apartment',
     image: '/images/apartment.png',
     unit: '/ night',
     rating: 4.7,
