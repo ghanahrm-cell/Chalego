@@ -1,9 +1,9 @@
-export type CountryCode = 'GH' | 'NG'
+export type CountryCode = 'GH' | 'NG' | 'CI'
 
 export type Country = {
   code: CountryCode
   name: string
-  currency: 'GHS' | 'NGN'
+  currency: 'GHS' | 'NGN' | 'XOF'
   locale: string
   dialCode: string
   cities: string[]
@@ -32,6 +32,18 @@ export const COUNTRIES: Record<CountryCode, Country> = {
       { code: 'ABV', name: 'Nnamdi Azikiwe International Airport', city: 'Abuja' },
     ],
   },
+  CI: {
+    code: 'CI',
+    name: "Côte d'Ivoire",
+    currency: 'XOF',
+    locale: 'fr-CI',
+    dialCode: '+225',
+    cities: ['Abidjan', 'Yamoussoukro', 'Bouaké', 'San-Pédro', 'Korhogo', 'Daloa'],
+    airports: [
+      { code: 'ABJ', name: 'Félix Houphouët-Boigny International Airport', city: 'Abidjan' },
+      { code: 'BYK', name: 'Bouaké Airport', city: 'Bouaké' },
+    ],
+  },
 }
 
 export const EXPANSION_MARKETS = [
@@ -41,6 +53,5 @@ export const EXPANSION_MARKETS = [
   'Rwanda',
   'South Africa',
   'Zambia',
-  "Côte d'Ivoire",
   'Senegal',
 ]

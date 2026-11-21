@@ -4,6 +4,8 @@ import { Inter, Space_Grotesk } from 'next/font/google'
 import { CountryProvider } from '@/components/country-provider'
 import { SiteHeader } from '@/components/site-header'
 import { SiteFooter } from '@/components/site-footer'
+import { LanguageProvider } from '@/components/language-provider'
+import { getLang } from '@/lib/i18n-server'
 import './globals.css'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
@@ -15,7 +17,7 @@ export const metadata: Metadata = {
     template: '%s | CHALEGO',
   },
   description:
-    "CHALEGO is Africa's all-in-one platform for rides, vehicle, truck and equipment rentals, cargo, moto delivery, hotels, apartments, airport transfers and food delivery across Ghana and Nigeria.",
+    "CHALEGO is Africa's all-in-one platform for rides, vehicle, truck and equipment rentals, cargo, moto delivery, hotels, apartments, airport transfers and food delivery across Ghana, Nigeria and Côte d'Ivoire.",
   keywords: ['ride hailing Ghana', 'car rental Lagos', 'food delivery Accra', 'airport transfer Kotoka', 'equipment rental Nigeria', 'CHALEGO'],
   generator: 'v0.app',
   icons: {
@@ -33,19 +35,22 @@ export const viewport: Viewport = {
   themeColor: '#14513a',
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const lang = await getLang()
   return (
-    <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`}>
+    <html lang={lang} className={`${inter.variable} ${spaceGrotesk.variable}`}>
       <body className="antialiased">
-        <CountryProvider>
-          <SiteHeader />
-          <main id="main">{children}</main>
-          <SiteFooter />
-        </CountryProvider>
+        <LanguageProvider lang={lang}>
+          <CountryProvider>
+            <SiteHeader />
+            <main id="main">{children}</main>
+            <SiteFooter />
+          </CountryProvider>
+        </LanguageProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>

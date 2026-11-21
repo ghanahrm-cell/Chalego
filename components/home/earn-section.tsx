@@ -24,7 +24,7 @@ export function EarnSection() {
             <SectionHeading
               eyebrow="Drive & earn"
               title="Turn your car or bike into income."
-              description="Join thousands of drivers, couriers and chauffeurs earning on their own schedule across Ghana and Nigeria."
+              description="Join thousands of drivers, couriers and chauffeurs earning on their own schedule across Ghana, Nigeria and Côte d'Ivoire."
             />
             <ul className="mt-8 grid gap-5 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
               {DRIVER_PERKS.map((p) => (
