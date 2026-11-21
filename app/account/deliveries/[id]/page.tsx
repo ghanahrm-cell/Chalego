@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft } from 'lucide-react'
+import { PayByCardPanel } from '@/components/payments/pay-by-card-panel'
 import { ShipmentView } from '@/components/shipments/shipment-view'
 import { requireUser } from '@/lib/session'
 import type { Shipment, ShipmentEvent, TrackingResult } from '@/lib/shipments'
@@ -40,6 +41,11 @@ export default async function DeliveryPage({ params }: { params: Promise<{ id: s
         isCustomer={isCustomer}
         locale={country?.locale ?? 'en-GH'}
       />
+      {isCustomer && (
+        <div className="max-w-md">
+          <PayByCardPanel kind="shipment" id={id} userId={user.id} locale={country?.locale ?? 'en-GH'} />
+        </div>
+      )}
     </div>
   )
 }

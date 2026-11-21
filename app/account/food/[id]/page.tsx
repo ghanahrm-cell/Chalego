@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft, Check, MapPin, Phone } from 'lucide-react'
 import { FoodOrderActions } from '@/components/food/food-order-actions'
+import { PayByCardPanel } from '@/components/payments/pay-by-card-panel'
 import { requireUser } from '@/lib/session'
 import { formatMoney, isAdminRole } from '@/lib/account'
 import { FOOD_ACTIVE, FOOD_ORDER_SELECT, FOOD_STATUS_LABELS, FOOD_STATUS_STYLES, foodSteps, type FoodOrder } from '@/lib/food'
@@ -147,6 +148,7 @@ export default async function FoodOrderPage({ params }: { params: Promise<{ id: 
               <p className="text-muted-foreground">Finding a rider near the restaurant…</p>
             )}
           </section>
+          {viewer === 'customer' && <PayByCardPanel kind="food" id={o.id} userId={user.id} locale={locale} />}
           <FoodOrderActions id={o.id} status={o.status} fulfilment={o.fulfilment} viewer={viewer} rated={o.rating !== null} active={active} />
         </div>
       </div>

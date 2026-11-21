@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Clock, MapPin } from 'lucide-react'
+import { PayByCardPanel } from '@/components/payments/pay-by-card-panel'
 import { StayActions } from '@/components/stays/stay-actions'
 import { requireUser } from '@/lib/session'
 import { formatMoney, isAdminRole } from '@/lib/account'
@@ -125,7 +126,8 @@ export default async function StayBookingPage({ params }: { params: Promise<{ id
           )}
         </div>
 
-        <aside>
+        <aside className="flex flex-col gap-4">
+          {viewer === 'guest' && <PayByCardPanel kind="stay" id={b.id} userId={user.id} locale={locale} />}
           <StayActions id={b.id} status={b.status} viewer={viewer} checkIn={b.check_in} checkOut={b.check_out} today={today} rated={b.rating != null} />
         </aside>
       </div>

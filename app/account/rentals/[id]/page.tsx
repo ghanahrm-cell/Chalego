@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { Phone } from 'lucide-react'
 import { BookingActions } from '@/components/rentals/booking-actions'
+import { PayByCardPanel } from '@/components/payments/pay-by-card-panel'
 import { requireUser } from '@/lib/session'
 import { formatMoney } from '@/lib/account'
 import { capitalize, formatRange, RENTAL_STATUS_STYLES, type RentalStatus } from '@/lib/rentals'
@@ -205,6 +206,7 @@ export default async function RentalBookingPage({ params }: { params: Promise<{ 
         </div>
 
         <aside className="flex flex-col gap-4">
+          {b.viewer === 'renter' && <PayByCardPanel kind="rental" id={b.id} userId={user.id} locale={locale} />}
           <section className="rounded-2xl border bg-card p-5">
             <h2 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{counterpart.label}</h2>
             <p className="mt-1 font-heading text-lg font-semibold">{counterpart.name}</p>

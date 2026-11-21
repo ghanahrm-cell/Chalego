@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils'
 const LINKS = [
   { href: '/admin', label: 'Overview', icon: LayoutDashboard },
   { href: '/admin/finance', label: 'Finance', icon: LineChart },
+  { href: '/admin/stripe', label: 'Card payments', icon: CreditCard },
   { href: '/admin/users', label: 'Users', icon: Users },
   { href: '/admin/rides', label: 'Rides', icon: Car },
   { href: '/admin/drivers', label: 'Drivers', icon: IdCard },
