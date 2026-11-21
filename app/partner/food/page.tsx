@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { Plus } from 'lucide-react'
 import { buttonVariants } from '@/components/ui/button'
 import { AutoRefresh } from '@/components/food/auto-refresh'
+import { OwnerApplication } from '@/components/rentals/owner-application'
 import { requireUser } from '@/lib/session'
 import { formatMoney, isAdminRole } from '@/lib/account'
 import { FOOD_ACTIVE, FOOD_STATUS_LABELS, FOOD_STATUS_STYLES, type FoodStatus } from '@/lib/food'
@@ -12,29 +13,58 @@ import { cn } from '@/lib/utils'
 export const metadata: Metadata = { title: 'Restaurant dashboard', robots: { index: false } }
 
 type Rest = { id: string; name: string; city: string; cover_url: string | null; is_open: boolean; is_active: boolean; currency: string; rating_avg: number | null; rating_count: number }
+type Applicant = {
+  owner_type: 'individual' | 'fleet'
+  business_name: string
+  registration_number: string | null
+  phone: string
+  city: string
+  payout_details: string | null
+  status: string
+  review_note: string | null
+}
 type Order = { id: string; reference: string; restaurant_id: string; status: FoodStatus; fulfilment: string; total_amount: number; restaurant_earnings: number | null; currency: string; created_at: string }
 
 export default async function PartnerFoodPage() {
   const { supabase, user, profile, country } = await requireUser('/partner/food')
   const locale = country?.locale ?? 'en-GH'
   const isAdmin = isAdminRole(profile?.role)
-  const { data: owner } = await supabase.from('rental_owners').select('business_name, status').eq('id', user.id).maybeSingle<{ business_name: string; status: string }>()
+  const { data: owner } = await supabase
+    .from('rental_owners')
+    .select('owner_type, business_name, registration_number, phone, city, payout_details, status, review_note')
+    .eq('id', user.id)
+    .maybeSingle<Applicant>()
   const approved = owner?.status === 'approved'
 
   if (!approved && !isAdmin) {
     return (
-      <div className="mx-auto flex max-w-2xl flex-col gap-4">
-        <h1 className="font-heading text-3xl font-bold tracking-tight">Partner your restaurant with CHALEGO</h1>
-        <p className="text-muted-foreground">
-          Put your menu online, accept delivery and pickup orders, and let CHALEGO riders handle the last mile. Restaurants use the same verified partner account as hosts and vehicle owners.
-        </p>
-        {owner?.status === 'pending' ? (
-          <p role="status" className="rounded-lg bg-accent/15 px-4 py-3 text-sm">Your partner application is under review. We usually respond within 2 business days.</p>
-        ) : (
-          <Link href="/partner/rentals" className={cn(buttonVariants(), 'h-11 w-fit px-5')}>
-            {owner ? 'Review your partner application' : 'Apply to become a partner'}
-          </Link>
+      <div className="mx-auto flex max-w-2xl flex-col gap-6">
+        <header>
+          <h1 className="font-heading text-3xl font-bold tracking-tight">Partner your restaurant with CHALEGO</h1>
+          <p className="mt-1 text-muted-foreground">
+            Put your menu online, accept delivery and pickup orders, and let CHALEGO riders handle the last mile. Once approved, you can add your restaurant, menu and opening hours.
+          </p>
+        </header>
+        {owner?.status === 'pending' && (
+          <p role="status" className="rounded-lg bg-accent/15 px-4 py-3 text-sm">Your restaurant application is under review. We usually respond within 2 business days.</p>
         )}
+        {owner?.status === 'rejected' && (
+          <p role="alert" className="rounded-lg bg-destructive/10 px-4 py-3 text-sm text-destructive">
+            Your application was not approved{owner.review_note ? `: ${owner.review_note}` : '.'} Update your details and resubmit.
+          </p>
+        )}
+        {owner?.status === 'suspended' ? (
+          <p role="alert" className="rounded-lg bg-destructive/10 px-4 py-3 text-sm text-destructive">
+            Your partner account is suspended{owner.review_note ? `: ${owner.review_note}` : '.'} Contact support for help.
+          </p>
+        ) : (
+          owner?.status !== 'pending' && (
+            <OwnerApplication variant="food" owner={owner} defaultPhone={profile?.phone ?? ''} defaultName={profile?.full_name ?? ''} />
+          )
+        )}
+        <p className="text-xs text-muted-foreground">
+          One verified partner account covers restaurants, stays and vehicle rentals, so you only need to apply once.
+        </p>
       </div>
     )
   }

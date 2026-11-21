@@ -18,7 +18,33 @@ type Owner = {
   payout_details: string | null
 } | null
 
-export function OwnerApplication({ owner, defaultPhone, defaultName }: { owner: Owner; defaultPhone: string; defaultName: string }) {
+const COPY = {
+  rentals: {
+    individual: { title: 'Individual owner', hint: 'Rent out your own car or truck', name: 'Display name' },
+    fleet: { title: 'Fleet company', hint: 'Registered business with multiple vehicles', name: 'Company name' },
+    cityLabel: 'City',
+  },
+  food: {
+    individual: { title: 'Independent restaurant', hint: 'A single restaurant, chop bar or home kitchen', name: 'Restaurant name' },
+    fleet: { title: 'Restaurant group', hint: 'Registered business with several outlets or brands', name: 'Registered company name' },
+    cityLabel: 'City where you operate',
+  },
+} as const
+
+export type ApplicationVariant = keyof typeof COPY
+
+export function OwnerApplication({
+  owner,
+  defaultPhone,
+  defaultName,
+  variant = 'rentals',
+}: {
+  owner: Owner
+  defaultPhone: string
+  defaultName: string
+  variant?: ApplicationVariant
+}) {
+  const copy = COPY[variant]
   const router = useRouter()
   const [type, setType] = useState<'individual' | 'fleet'>(owner?.owner_type ?? 'individual')
   const [pending, setPending] = useState(false)
@@ -58,13 +84,13 @@ export function OwnerApplication({ owner, defaultPhone, defaultName }: { owner: 
             onClick={() => setType(t)}
             className={cn('rounded-xl border p-3 text-left', type === t ? 'border-primary bg-primary/5' : 'hover:border-foreground/30')}
           >
-            <span className="block text-sm font-semibold">{t === 'individual' ? 'Individual owner' : 'Fleet company'}</span>
-            <span className="text-xs text-muted-foreground">{t === 'individual' ? 'Rent out your own car or truck' : 'Registered business with multiple vehicles'}</span>
+            <span className="block text-sm font-semibold">{copy[t].title}</span>
+            <span className="text-xs text-muted-foreground">{copy[t].hint}</span>
           </button>
         ))}
       </div>
       <label className="flex flex-col gap-1.5 text-xs font-semibold text-muted-foreground">
-        {type === 'fleet' ? 'Company name' : 'Display name'}
+        {copy[type].name}
         <input name="business" required minLength={2} maxLength={120} defaultValue={owner?.business_name ?? defaultName} className={fieldClass} />
       </label>
       <label className="flex flex-col gap-1.5 text-xs font-semibold text-muted-foreground">
@@ -76,7 +102,7 @@ export function OwnerApplication({ owner, defaultPhone, defaultName }: { owner: 
         <input name="phone" type="tel" required minLength={6} maxLength={20} defaultValue={owner?.phone ?? defaultPhone} className={fieldClass} />
       </label>
       <label className="flex flex-col gap-1.5 text-xs font-semibold text-muted-foreground">
-        City
+        {copy.cityLabel}
         <input name="city" required minLength={2} maxLength={80} defaultValue={owner?.city ?? ''} className={fieldClass} />
       </label>
       <label className="flex flex-col gap-1.5 text-xs font-semibold text-muted-foreground sm:col-span-2">
